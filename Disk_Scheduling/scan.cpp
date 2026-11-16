@@ -1,11 +1,9 @@
-// SCAN (Elevator) Disk Scheduling - head first moves towards higher cylinders
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <algorithm>
 #include <cstdlib>
 using namespace std;
-
 int SCAN(const vector<int>& requests, int head, int diskSize)
 {
     ofstream file("SCAN.csv");
@@ -20,21 +18,15 @@ int SCAN(const vector<int>& requests, int head, int diskSize)
     }
     sort(left.begin(), left.end());
     sort(right.begin(), right.end());
-
-    // service requests towards higher cylinders
     for (int r : right) {
         totalMovement += abs(head - r);
         head = r;
         file << step++ << "," << head << "\n";
     }
-
-    // go to the last cylinder only if there are requests left to service
-    // on the other side, then reverse direction
     if (!left.empty()) {
         totalMovement += abs(head - (diskSize - 1));
         head = diskSize - 1;
         file << step++ << "," << head << "\n";
-
         for (int i = (int)left.size() - 1; i >= 0; i--) {
             totalMovement += abs(head - left[i]);
             head = left[i];
@@ -44,7 +36,6 @@ int SCAN(const vector<int>& requests, int head, int diskSize)
     file.close();
     return totalMovement;
 }
-
 int main()
 {
     int n;

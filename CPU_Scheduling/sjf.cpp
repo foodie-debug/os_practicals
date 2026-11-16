@@ -1,4 +1,3 @@
-// SJF (Shortest Job First) CPU Scheduling
 // 1. Non-Preemptive SJF
 // 2. Preemptive SJF (SRTF - Shortest Remaining Time First)
 #include <iostream>
@@ -6,7 +5,6 @@
 #include <algorithm>
 #include <climits>
 using namespace std;
-
 struct Process {
     int pid;
     int arrival;
@@ -16,17 +14,12 @@ struct Process {
     int turnaround = 0;
     int waiting = 0;
 };
-
 struct Gantt {
-    int pid;   // -1 means CPU idle
+    int pid; 
     int start;
     int end;
 };
-
 vector<Gantt> gantt;
-
-// Adds a block to the Gantt chart; merges consecutive blocks of the same
-// process and inserts an IDLE block if the CPU was free
 void addToGantt(int pid, int start, int end) {
     int lastEnd = gantt.empty() ? 0 : gantt.back().end;
     if (start > lastEnd)
@@ -36,7 +29,6 @@ void addToGantt(int pid, int start, int end) {
     else
         gantt.push_back({pid, start, end});
 }
-
 void SJF_NonPreemptive(vector<Process>& p) {
     int n = p.size();
     int time = 0, completed = 0;
@@ -50,7 +42,7 @@ void SJF_NonPreemptive(vector<Process>& p) {
                 idx = i;
             }
         }
-        if (idx == -1) {   // no process has arrived yet
+        if (idx == -1) {   
             time++;
             continue;
         }
@@ -64,7 +56,6 @@ void SJF_NonPreemptive(vector<Process>& p) {
         addToGantt(p[idx].pid, start, time);
     }
 }
-
 void SJF_Preemptive(vector<Process>& p) {
     int n = p.size();
     int time = 0, completed = 0;
@@ -83,7 +74,6 @@ void SJF_Preemptive(vector<Process>& p) {
             time++;
             continue;
         }
-        // run the selected process for 1 time unit
         p[idx].remaining--;
         addToGantt(p[idx].pid, time, time + 1);
         time++;
@@ -95,7 +85,6 @@ void SJF_Preemptive(vector<Process>& p) {
         }
     }
 }
-
 void printGanttChart() {
     if (gantt.empty()) return;
     cout << "\n\nGANTT CHART\n\n";
@@ -112,7 +101,6 @@ void printGanttChart() {
     for (auto& g : gantt) cout << "\t" << g.end;
     cout << "\n";
 }
-
 void printTable(const vector<Process>& p) {
     double totalTAT = 0, totalWT = 0;
     cout << "\nPID\tAT\tBT\tCT\tTAT\tWT\n";
@@ -125,7 +113,6 @@ void printTable(const vector<Process>& p) {
     cout << "\nAverage Turnaround Time = " << totalTAT / p.size();
     cout << "\nAverage Waiting Time    = " << totalWT / p.size() << "\n";
 }
-
 int main() {
     int n;
     cout << "Enter number of processes: ";
@@ -142,13 +129,11 @@ int main() {
         cout << "Burst Time P" << i + 1 << ": ";
         cin >> p[i].burst;
     }
-
     int choice;
     cout << "\n1. SJF Non-Preemptive";
     cout << "\n2. SJF Preemptive (SRTF)";
     cout << "\nEnter choice: ";
     cin >> choice;
-
     switch (choice) {
         case 1: SJF_NonPreemptive(p); break;
         case 2: SJF_Preemptive(p); break;

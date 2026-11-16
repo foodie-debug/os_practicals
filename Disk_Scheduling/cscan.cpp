@@ -1,12 +1,9 @@
-// C-SCAN (Circular SCAN) Disk Scheduling - head moves towards higher cylinders
-// The jump from the last cylinder back to cylinder 0 is counted in head movement.
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <algorithm>
 #include <cstdlib>
 using namespace std;
-
 int CSCAN(const vector<int>& requests, int head, int diskSize)
 {
     ofstream file("CSCAN.csv");
@@ -21,26 +18,18 @@ int CSCAN(const vector<int>& requests, int head, int diskSize)
     }
     sort(left.begin(), left.end());
     sort(right.begin(), right.end());
-
-    // service requests towards higher cylinders
     for (int r : right) {
         totalMovement += abs(head - r);
         head = r;
         file << step++ << "," << head << "\n";
     }
-
     if (!left.empty()) {
-        // go to the last cylinder
         totalMovement += abs(head - (diskSize - 1));
         head = diskSize - 1;
         file << step++ << "," << head << "\n";
-
-        // jump back to cylinder 0
         totalMovement += diskSize - 1;
         head = 0;
         file << step++ << "," << head << "\n";
-
-        // continue servicing towards higher cylinders
         for (int r : left) {
             totalMovement += abs(head - r);
             head = r;
@@ -50,7 +39,6 @@ int CSCAN(const vector<int>& requests, int head, int diskSize)
     file.close();
     return totalMovement;
 }
-
 int main()
 {
     int n;

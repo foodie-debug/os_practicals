@@ -1,17 +1,11 @@
-# Producer-Consumer Problem using Semaphores
-
 import threading
 import time
-
 buffer = []
 capacity = 3
 items = [1, 2, 3, 4, 5]
-
-empty = threading.Semaphore(capacity)   # counts empty slots
-full = threading.Semaphore(0)           # counts filled slots
-mutex = threading.Semaphore(1)          # mutual exclusion on the buffer
-
-
+empty = threading.Semaphore(capacity)
+full = threading.Semaphore(0)
+mutex = threading.Semaphore(1)
 def producer():
     for item in items:
         empty.acquire()
@@ -21,8 +15,6 @@ def producer():
         mutex.release()
         full.release()
         time.sleep(0.1)
-
-
 def consumer():
     for _ in items:
         full.acquire()
@@ -32,8 +24,6 @@ def consumer():
         mutex.release()
         empty.release()
         time.sleep(0.2)
-
-
 p = threading.Thread(target=producer)
 c = threading.Thread(target=consumer)
 p.start()

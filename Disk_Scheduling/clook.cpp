@@ -1,11 +1,9 @@
-// C-LOOK (Circular LOOK) Disk Scheduling - head moves towards higher cylinders
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <algorithm>
 #include <cstdlib>
 using namespace std;
-
 int CLOOK(const vector<int>& requests, int head)
 {
     ofstream file("CLOOK.csv");
@@ -20,15 +18,11 @@ int CLOOK(const vector<int>& requests, int head)
     }
     sort(left.begin(), left.end());
     sort(right.begin(), right.end());
-
-    // service requests towards higher cylinders
     for (int r : right) {
         totalMovement += abs(head - r);
         head = r;
         file << step++ << "," << head << "\n";
     }
-
-    // jump to the lowest pending request and continue upwards
     for (int r : left) {
         totalMovement += abs(head - r);
         head = r;
@@ -37,7 +31,6 @@ int CLOOK(const vector<int>& requests, int head)
     file.close();
     return totalMovement;
 }
-
 int main()
 {
     int n;

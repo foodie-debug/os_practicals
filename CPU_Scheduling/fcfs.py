@@ -1,5 +1,3 @@
-# FCFS (First Come First Serve) CPU Scheduling - Non-Preemptive
-
 class Process:
     def __init__(self, pid, arrival, burst):
         self.pid = pid
@@ -9,14 +7,8 @@ class Process:
         self.completion = 0
         self.turnaround = 0
         self.waiting = 0
-
-
-gantt = []   # list of [pid, start, end]; pid = -1 means CPU idle
-
-
+gantt = []
 def add_to_gantt(pid, start, end):
-    """Adds a block to the Gantt chart, merges consecutive blocks of the
-    same process and inserts an IDLE block if the CPU was free."""
     last_end = gantt[-1][2] if gantt else 0
     if start > last_end:
         gantt.append([-1, last_end, start])
@@ -24,16 +16,11 @@ def add_to_gantt(pid, start, end):
         gantt[-1][2] = end
     else:
         gantt.append([pid, start, end])
-
-
 def finish(p, time):
     p.completion = time
     p.turnaround = p.completion - p.arrival
     p.waiting = p.turnaround - p.burst
-
-
 def fcfs(processes):
-    # sorted() is stable, so processes with equal arrival keep input order
     order = sorted(processes, key=lambda x: x.arrival)
     time = 0
     for p in order:
@@ -43,8 +30,6 @@ def fcfs(processes):
         time += p.burst
         finish(p, time)
         add_to_gantt(p.pid, start, time)
-
-
 def print_gantt_chart():
     if not gantt:
         return
@@ -59,8 +44,6 @@ def print_gantt_chart():
     for pid, start, end in gantt:
         times += "\t" + str(end)
     print(times)
-
-
 def print_table(processes):
     processes = sorted(processes, key=lambda x: x.pid)
     print("\nPID\tAT\tBT\tCT\tTAT\tWT")
@@ -72,8 +55,6 @@ def print_table(processes):
         total_wt += x.waiting
     print("\nAverage Turnaround Time =", round(total_tat / len(processes), 2))
     print("Average Waiting Time    =", round(total_wt / len(processes), 2))
-
-
 def read_processes():
     n = int(input("Enter number of processes: "))
     if n <= 0:
@@ -85,8 +66,6 @@ def read_processes():
         burst = int(input("Burst Time P" + str(i) + ": "))
         processes.append(Process(i, arrival, burst))
     return processes
-
-
 processes = read_processes()
 fcfs(processes)
 print_gantt_chart()

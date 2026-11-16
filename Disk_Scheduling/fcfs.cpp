@@ -1,11 +1,9 @@
-// FCFS (First Come First Serve) Disk Scheduling
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <algorithm>
 #include <cstdlib>
 using namespace std;
-
 int FCFS(const vector<int>& requests, int head)
 {
     ofstream file("FCFS.csv");
@@ -21,7 +19,6 @@ int FCFS(const vector<int>& requests, int head)
     file.close();
     return totalMovement;
 }
-
 int main()
 {
     int n;

@@ -1,6 +1,4 @@
-# Round Robin CPU Scheduling (Preemptive, fixed time quantum)
 from collections import deque
-
 class Process:
     def __init__(self, pid, arrival, burst):
         self.pid = pid
@@ -10,14 +8,8 @@ class Process:
         self.completion = 0
         self.turnaround = 0
         self.waiting = 0
-
-
-gantt = []   # list of [pid, start, end]; pid = -1 means CPU idle
-
-
+gantt = []   
 def add_to_gantt(pid, start, end):
-    """Adds a block to the Gantt chart, merges consecutive blocks of the
-    same process and inserts an IDLE block if the CPU was free."""
     last_end = gantt[-1][2] if gantt else 0
     if start > last_end:
         gantt.append([-1, last_end, start])
@@ -25,14 +17,10 @@ def add_to_gantt(pid, start, end):
         gantt[-1][2] = end
     else:
         gantt.append([pid, start, end])
-
-
 def finish(p, time):
     p.completion = time
     p.turnaround = p.completion - p.arrival
     p.waiting = p.turnaround - p.burst
-
-
 def round_robin(processes, quantum):
     n = len(processes)
     time = completed = 0
@@ -40,19 +28,16 @@ def round_robin(processes, quantum):
         p.remaining = p.burst
     q = deque()
     added = [False] * n
-
     def add_arrived():
-        # push every process that has arrived by 'time', in arrival order
         arrived = [i for i in range(n)
                    if not added[i] and processes[i].arrival <= time]
         arrived.sort(key=lambda i: processes[i].arrival)
         for i in arrived:
             q.append(i)
             added[i] = True
-
     while completed < n:
         add_arrived()
-        if not q:              # CPU idle until next arrival
+        if not q:             
             time += 1
             continue
         idx = q.popleft()
@@ -62,18 +47,12 @@ def round_robin(processes, quantum):
         p.remaining -= run_time
         time += run_time
         add_to_gantt(p.pid, start, time)
-
-        # processes that arrived during this time slice enter the queue
-        # before the current process is put back at the end
         add_arrived()
-
         if p.remaining == 0:
             finish(p, time)
             completed += 1
         else:
             q.append(idx)
-
-
 def print_gantt_chart():
     if not gantt:
         return
@@ -88,8 +67,6 @@ def print_gantt_chart():
     for pid, start, end in gantt:
         times += "\t" + str(end)
     print(times)
-
-
 def print_table(processes):
     processes = sorted(processes, key=lambda x: x.pid)
     print("\nPID\tAT\tBT\tCT\tTAT\tWT")
@@ -101,8 +78,6 @@ def print_table(processes):
         total_wt += x.waiting
     print("\nAverage Turnaround Time =", round(total_tat / len(processes), 2))
     print("Average Waiting Time    =", round(total_wt / len(processes), 2))
-
-
 def read_processes():
     n = int(input("Enter number of processes: "))
     if n <= 0:
@@ -114,8 +89,6 @@ def read_processes():
         burst = int(input("Burst Time P" + str(i) + ": "))
         processes.append(Process(i, arrival, burst))
     return processes
-
-
 processes = read_processes()
 quantum = int(input("Enter time quantum: "))
 if quantum <= 0:

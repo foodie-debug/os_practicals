@@ -1,9 +1,7 @@
-// FCFS (First Come First Serve) CPU Scheduling - Non-Preemptive
 #include <iostream>
 #include <vector>
 #include <algorithm>
 using namespace std;
-
 struct Process {
     int pid;
     int arrival;
@@ -12,25 +10,19 @@ struct Process {
     int turnaround = 0;
     int waiting = 0;
 };
-
 struct Gantt {
-    int pid;   // -1 means CPU idle
+    int pid;   
     int start;
     int end;
 };
-
 vector<Gantt> gantt;
-
-// Adds a block to the Gantt chart; inserts an IDLE block if the CPU was free
 void addToGantt(int pid, int start, int end) {
     int lastEnd = gantt.empty() ? 0 : gantt.back().end;
     if (start > lastEnd)
         gantt.push_back({-1, lastEnd, start});
     gantt.push_back({pid, start, end});
 }
-
 void FCFS(vector<Process>& p) {
-    // stable_sort keeps the input order for processes with the same arrival time
     stable_sort(p.begin(), p.end(), [](const Process& a, const Process& b) {
         return a.arrival < b.arrival;
     });
@@ -46,7 +38,6 @@ void FCFS(vector<Process>& p) {
         addToGantt(p[i].pid, start, time);
     }
 }
-
 void printGanttChart() {
     if (gantt.empty()) return;
     cout << "\n\nGANTT CHART\n\n";
@@ -63,7 +54,6 @@ void printGanttChart() {
     for (auto& g : gantt) cout << "\t" << g.end;
     cout << "\n";
 }
-
 void printTable(vector<Process> p) {
     sort(p.begin(), p.end(), [](const Process& a, const Process& b) { return a.pid < b.pid; });
     double totalTAT = 0, totalWT = 0;
@@ -77,7 +67,6 @@ void printTable(vector<Process> p) {
     cout << "\nAverage Turnaround Time = " << totalTAT / p.size();
     cout << "\nAverage Waiting Time    = " << totalWT / p.size() << "\n";
 }
-
 int main() {
     int n;
     cout << "Enter number of processes: ";

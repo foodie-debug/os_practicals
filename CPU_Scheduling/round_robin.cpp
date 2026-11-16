@@ -1,10 +1,8 @@
-// Round Robin CPU Scheduling (Preemptive, fixed time quantum)
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include <queue>
 using namespace std;
-
 struct Process {
     int pid;
     int arrival;
@@ -14,17 +12,12 @@ struct Process {
     int turnaround = 0;
     int waiting = 0;
 };
-
 struct Gantt {
-    int pid;   // -1 means CPU idle
+    int pid;   
     int start;
     int end;
 };
-
 vector<Gantt> gantt;
-
-// Adds a block to the Gantt chart; merges consecutive blocks of the same
-// process and inserts an IDLE block if the CPU was free
 void addToGantt(int pid, int start, int end) {
     int lastEnd = gantt.empty() ? 0 : gantt.back().end;
     if (start > lastEnd)
@@ -34,7 +27,6 @@ void addToGantt(int pid, int start, int end) {
     else
         gantt.push_back({pid, start, end});
 }
-
 void RoundRobin(vector<Process>& p, int quantum) {
     int n = p.size();
     int time = 0, completed = 0;
@@ -42,8 +34,6 @@ void RoundRobin(vector<Process>& p, int quantum) {
         p[i].remaining = p[i].burst;
     queue<int> q;
     vector<bool> added(n, false);
-
-    // pushes every process that has arrived by 'time' (in arrival order)
     auto addArrived = [&]() {
         vector<int> order;
         for (int i = 0; i < n; i++)
@@ -56,10 +46,9 @@ void RoundRobin(vector<Process>& p, int quantum) {
             added[i] = true;
         }
     };
-
     while (completed < n) {
         addArrived();
-        if (q.empty()) {   // CPU idle until next arrival
+        if (q.empty()) {   
             time++;
             continue;
         }
@@ -70,11 +59,7 @@ void RoundRobin(vector<Process>& p, int quantum) {
         p[idx].remaining -= runTime;
         time += runTime;
         addToGantt(p[idx].pid, start, time);
-
-        // processes that arrived during this time slice enter the queue
-        // before the current process is put back at the end
         addArrived();
-
         if (p[idx].remaining == 0) {
             p[idx].completion = time;
             p[idx].turnaround = p[idx].completion - p[idx].arrival;
@@ -85,7 +70,6 @@ void RoundRobin(vector<Process>& p, int quantum) {
         }
     }
 }
-
 void printGanttChart() {
     if (gantt.empty()) return;
     cout << "\n\nGANTT CHART\n\n";
@@ -102,7 +86,6 @@ void printGanttChart() {
     for (auto& g : gantt) cout << "\t" << g.end;
     cout << "\n";
 }
-
 void printTable(const vector<Process>& p) {
     double totalTAT = 0, totalWT = 0;
     cout << "\nPID\tAT\tBT\tCT\tTAT\tWT\n";
@@ -115,7 +98,6 @@ void printTable(const vector<Process>& p) {
     cout << "\nAverage Turnaround Time = " << totalTAT / p.size();
     cout << "\nAverage Waiting Time    = " << totalWT / p.size() << "\n";
 }
-
 int main() {
     int n;
     cout << "Enter number of processes: ";
@@ -132,7 +114,6 @@ int main() {
         cout << "Burst Time P" << i + 1 << ": ";
         cin >> p[i].burst;
     }
-
     int quantum;
     cout << "Enter time quantum: ";
     cin >> quantum;

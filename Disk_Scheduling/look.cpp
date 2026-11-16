@@ -1,11 +1,9 @@
-// LOOK Disk Scheduling - head first moves towards higher cylinders
 #include <iostream>
 #include <vector>
 #include <fstream>
 #include <algorithm>
 #include <cstdlib>
 using namespace std;
-
 int LOOK(const vector<int>& requests, int head)
 {
     ofstream file("LOOK.csv");
@@ -20,15 +18,11 @@ int LOOK(const vector<int>& requests, int head)
     }
     sort(left.begin(), left.end());
     sort(right.begin(), right.end());
-
-    // service requests towards higher cylinders
     for (int r : right) {
         totalMovement += abs(head - r);
         head = r;
         file << step++ << "," << head << "\n";
     }
-
-    // reverse at the last request (not at the end of the disk)
     for (int i = (int)left.size() - 1; i >= 0; i--) {
         totalMovement += abs(head - left[i]);
         head = left[i];
@@ -37,7 +31,6 @@ int LOOK(const vector<int>& requests, int head)
     file.close();
     return totalMovement;
 }
-
 int main()
 {
     int n;

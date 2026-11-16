@@ -1,4 +1,3 @@
-// SSTF (Shortest Seek Time First) Disk Scheduling
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -6,7 +5,6 @@
 #include <cstdlib>
 #include <climits>
 using namespace std;
-
 int SSTF(const vector<int>& requests, int head)
 {
     ofstream file("SSTF.csv");
@@ -33,7 +31,6 @@ int SSTF(const vector<int>& requests, int head)
     file.close();
     return totalMovement;
 }
-
 int main()
 {
     int n;

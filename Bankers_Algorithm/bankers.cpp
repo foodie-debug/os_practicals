@@ -1,14 +1,10 @@
-// Banker's Algorithm - Deadlock Avoidance (Safety Algorithm)
 #include <iostream>
 #include <vector>
 using namespace std;
-
 int main() {
-    const int n = 5;   // number of processes
-    const int m = 3;   // number of resource types (A, B, C)
-
+    const int n = 5;
+    const int m = 3;
     vector<int> available = {3, 3, 2};
-
     vector<vector<int>> allocation = {
         {0, 1, 0},
         {2, 0, 0},
@@ -16,7 +12,6 @@ int main() {
         {2, 1, 1},
         {0, 0, 2}
     };
-
     vector<vector<int>> maximum = {
         {7, 5, 3},
         {3, 2, 2},
@@ -24,13 +19,10 @@ int main() {
         {2, 2, 2},
         {4, 3, 3}
     };
-
-    // Need = Maximum - Allocation
     vector<vector<int>> need(n, vector<int>(m));
     for (int i = 0; i < n; i++)
         for (int j = 0; j < m; j++)
             need[i][j] = maximum[i][j] - allocation[i][j];
-
     cout << "Need Matrix:\n";
     for (int i = 0; i < n; i++) {
         cout << "P" << i << " : [";
@@ -38,11 +30,9 @@ int main() {
             cout << need[i][j] << (j < m - 1 ? ", " : "");
         cout << "]\n";
     }
-
     vector<int> work = available;
     vector<bool> finished(n, false);
     vector<int> safeSequence;
-
     while ((int)safeSequence.size() < n) {
         bool found = false;
         for (int i = 0; i < n; i++) {
@@ -66,7 +56,6 @@ int main() {
         if (!found)
             break;
     }
-
     if ((int)safeSequence.size() == n) {
         cout << "\nSystem is in SAFE state\n";
         cout << "Safe Sequence: ";
